@@ -27,7 +27,7 @@ export const BNP_CASES: MMCase[] = [
       notes: "Assignee confirmed road shipment only. No vehicle or pets. Origin property is a 2-bed apartment. Destination TBC pending housing search. Assignee available from 15 Feb for packing.",
       summarySentDate: "2026-01-21"
     },
-    kpi: { preMoveServeyDate: "2026-01-28", deliveryComplete: false },
+    kpi: { preMovesSurveyDate: "2026-01-28", deliveryComplete: false },
     billing: {},
     csatSent: false
   },
@@ -58,7 +58,7 @@ export const BNP_CASES: MMCase[] = [
       notes: "Assignee requires air + sea combination. Family of 3. Approx 50 cbm sea + 400kg air. Packing requested late February. Assignee preference: Santa Fe.",
       summarySentDate: "2026-01-18"
     },
-    kpi: { preMoveServeyDate: "2026-01-25", deliveryComplete: false },
+    kpi: { preMovesSurveyDate: "2026-01-25", deliveryComplete: false },
     billing: {},
     csatSent: false
   },
@@ -118,7 +118,7 @@ export const BNP_CASES: MMCase[] = [
       summarySentDate: "2026-01-13"
     },
     kpi: {
-      preMoveServeyDate: "2026-01-20",
+      preMovesSurveyDate: "2026-01-20",
       actualPackingDate: "2026-03-01",
       finalsReceivedDate: "2026-03-03",
       deliveryComplete: false,
@@ -155,7 +155,7 @@ export const BNP_CASES: MMCase[] = [
       summarySentDate: "2025-12-19"
     },
     kpi: {
-      preMoveServeyDate: "2026-01-08",
+      preMovesSurveyDate: "2026-01-08",
       actualPackingDate: "2026-03-10",
       finalsReceivedDate: "2026-03-12",
       deliveryComplete: true,
@@ -193,7 +193,7 @@ export const BNP_CASES: MMCase[] = [
       summarySentDate: "2025-11-28"
     },
     kpi: {
-      preMoveServeyDate: "2025-12-05",
+      preMovesSurveyDate: "2025-12-05",
       actualPackingDate: "2026-01-15",
       finalsReceivedDate: "2026-01-17",
       deliveryComplete: true,
@@ -251,7 +251,7 @@ export const BNP_CASES: MMCase[] = [
       summarySentDate: "2026-01-10"
     },
     kpi: {
-      preMoveServeyDate: "2026-01-16",
+      preMovesSurveyDate: "2026-01-16",
       actualPackingDate: "2026-03-05",
       deliveryComplete: false
     },

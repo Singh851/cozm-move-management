@@ -72,10 +72,12 @@ export function Settings() {
     setNewEmail("");
     setNewName("");
     setNewRole("User");
+    setNewEntity("BNP Paribas");
     setAddError("");
   };
 
-  const removeUser = (id: number) => {
+  const removeUser = (id: number, name: string) => {
+    if (!window.confirm(`Remove ${name} from Unity? This cannot be undone.`)) return;
     setUsers(prev => prev.filter(u => u.id !== id));
   };
 
@@ -140,7 +142,7 @@ export function Settings() {
                     <td className="p-3 border border-slate-200 text-slate-600 text-xs">{u.entity}</td>
                     <td className="p-3 border border-slate-200 text-center">
                       <button
-                        onClick={() => removeUser(u.id)}
+                        onClick={() => removeUser(u.id, u.name)}
                         className="text-slate-400 hover:text-red-500 transition-colors"
                         title="Remove user"
                       >

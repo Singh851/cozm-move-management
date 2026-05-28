@@ -25,12 +25,17 @@ export function Billing() {
     else if (c.billing.moverInvoiceReceivedDate) billingStatus = "Awaiting Invoice";
     else billingStatus = "Pending";
 
+    const whoToBillDisplay =
+      c.billing.whoToBill === "AM" ? "Unity (AM)" :
+      c.billing.whoToBill === "Client" ? "Client" :
+      "TBC";
+
     return {
       id: c.id,
       assignee: c.assignee.name,
       entity: c.entity,
       mover: c.selectedMover,
-      whoToBill: c.billing.whoToBill ?? "—",
+      whoToBill: whoToBillDisplay,
       invoiceReceived: c.billing.moverInvoiceReceivedDate,
       billingCompleted: c.billing.billingCompletedDate,
       amount,

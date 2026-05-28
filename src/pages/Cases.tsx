@@ -1,21 +1,29 @@
 import { Card, CardContent, CardHeader } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
-import { PlusCircle, Search, Filter } from "lucide-react";
+import { PlusCircle, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BNP_CASES } from "../data/bnpCases";
-import { getStatusColor } from "../lib/statusUtils";
+import { getStatusColor, STATUS_ORDER } from "../lib/statusUtils";
 import { useState } from "react";
+import { cn } from "../lib/utils";
+import type { CaseStatus } from "../data/types";
+
+const activeCount = BNP_CASES.filter(c => c.status !== "Complete").length;
 
 export function Cases() {
   const [query, setQuery] = useState("");
-  const filtered = BNP_CASES.filter(
-    (c) =>
+  const [statusFilter, setStatusFilter] = useState<CaseStatus | "All">("All");
+
+  const filtered = BNP_CASES.filter((c) => {
+    const matchesSearch =
       c.id.toLowerCase().includes(query.toLowerCase()) ||
       c.assignee.name.toLowerCase().includes(query.toLowerCase()) ||
       c.from.country.toLowerCase().includes(query.toLowerCase()) ||
       c.to.country.toLowerCase().includes(query.toLowerCase()) ||
-      c.entity.toLowerCase().includes(query.toLowerCase())
-  );
+      c.entity.toLowerCase().includes(query.toLowerCase());
+    const matchesStatus = statusFilter === "All" || c.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
@@ -25,7 +33,9 @@ export function Cases() {
             <span className="text-xs font-semibold tracking-widest text-primary-600 uppercase">BNP Paribas</span>
           </div>
           <h1 className="font-display text-3xl font-bold text-slate-900 tracking-tight">Cases</h1>
-          <p className="text-slate-500 mt-1">Manage all mobility assignments — {BNP_CASES.length} active cases.</p>
+          <p className="text-slate-500 mt-1">
+            {BNP_CASES.length} total cases — <strong>{activeCount}</strong> in progress, <strong>{BNP_CASES.length - activeCount}</strong> complete.
+          </p>
         </div>
         <Link to="/new-case">
           <Button className="bg-primary-600 hover:bg-primary-700 h-10 px-5">
@@ -35,7 +45,7 @@ export function Cases() {
       </div>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between p-4 border-b gap-3">
+        <CardHeader className="flex flex-col gap-3 p-4 border-b">
           <div className="flex items-center gap-2 w-full max-w-sm px-3 py-1.5 bg-slate-100 rounded-lg border border-slate-200">
             <Search className="h-4 w-4 text-slate-400 shrink-0" />
             <input
@@ -46,9 +56,22 @@ export function Cases() {
               className="bg-transparent border-none outline-none text-sm w-full text-slate-700 placeholder:text-slate-400"
             />
           </div>
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" /> Filter
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            {(["All", ...STATUS_ORDER] as (CaseStatus | "All")[]).map((s) => (
+              <button
+                key={s}
+                onClick={() => setStatusFilter(s)}
+                className={cn(
+                  "px-3 py-1 rounded-full text-xs font-semibold border transition-colors",
+                  statusFilter === s
+                    ? "bg-slate-900 text-white border-slate-900"
+                    : "bg-white text-slate-500 border-slate-200 hover:border-slate-400"
+                )}
+              >
+                {s === "All" ? `All (${BNP_CASES.length})` : s}
+              </button>
+            ))}
+          </div>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-sm text-left">

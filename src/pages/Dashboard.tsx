@@ -15,13 +15,18 @@ import {
 const ANALYSE_BY = ["All Moves", "By Entity", "By MMC", "By Route", "By Shipment Type"];
 const DATE_RANGES = ["This Month", "Last Month", "Last Quarter", "Year to Date"];
 
-// ── KPIs ─────────────────────────────────────────────────────────────────────
+// ── KPIs — derived from real case data where possible ────────────────────────
+const activeMoves    = BNP_CASES.filter(c => c.status !== "Complete").length;
+const completedCases = BNP_CASES.filter(c => c.status === "Complete").length;
+const unassigned     = BNP_CASES.filter(c => !c.mmc).length;
+const totalSavings   = BNP_CASES.flatMap(c => c.quotes).filter(q => q.winner && q.savings).reduce((a, q) => a + (q.savings ?? 0), 0);
+
 const kpis = [
-  { label: "Active Moves",           value: "38",  icon: Truck,        color: "bg-primary-100 text-primary-600", badge: "↑ 6%",  bv: "success" as const },
-  { label: "Completed This Month",   value: "12",  icon: CheckCircle2, color: "bg-green-100 text-green-600",   badge: "↑ 3",   bv: "success" as const },
-  { label: "On-Time Delivery",       value: "94%", icon: Clock,        color: "bg-primary-100 text-primary-600", badge: "↑ 2%", bv: "success" as const },
-  { label: "Quote Timeliness",       value: "87%", icon: FileText,     color: "bg-yellow-100 text-yellow-600", badge: undefined, bv: undefined },
-  { label: "Pending Approvals",      value: "5",   icon: AlertCircle,  color: "bg-red-100 text-red-600",       badge: "↓ 2",   bv: "destructive" as const },
+  { label: "Active Moves",           value: String(activeMoves),   icon: Truck,        color: "bg-primary-100 text-primary-600", badge: undefined,  bv: undefined },
+  { label: "Completed Cases",        value: String(completedCases),icon: CheckCircle2, color: "bg-green-100 text-green-600",     badge: undefined,  bv: undefined },
+  { label: "On-Time Delivery",       value: "94%",                 icon: Clock,        color: "bg-primary-100 text-primary-600", badge: "↑ 2%",    bv: "success" as const },
+  { label: "Quote Timeliness",       value: "87%",                 icon: FileText,     color: "bg-yellow-100 text-yellow-600",   badge: undefined,  bv: undefined },
+  { label: "Unassigned Cases",       value: String(unassigned),    icon: AlertCircle,  color: unassigned > 0 ? "bg-red-100 text-red-600" : "bg-slate-100 text-slate-500", badge: unassigned > 0 ? "Action needed" : undefined, bv: unassigned > 0 ? "destructive" as const : undefined },
 ];
 
 // ── Chart data ────────────────────────────────────────────────────────────────
@@ -57,7 +62,7 @@ const savingsByEntity = [
   { entity: "BNPP Portugal",   savings: 509.30 },
 ];
 
-const TOTAL_SAVINGS = savingsByEntity.reduce((a, e) => a + e.savings, 0);
+const TOTAL_SAVINGS = totalSavings > 0 ? totalSavings : savingsByEntity.reduce((a, e) => a + e.savings, 0);
 
 export function Dashboard() {
   const [analyseBy, setAnalyseBy] = useState("All Moves");

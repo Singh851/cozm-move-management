@@ -44,19 +44,20 @@ export function getStatusColor(status: CaseStatus): { bg: string; text: string; 
   }
 }
 
-/** Returns the Unity phase index (1–14) from the D-phases based on current case status */
+/** Returns the Unity phase index (1–14) that is currently ACTIVE for a given case status.
+ *  Phases below the returned index are "complete"; the returned index is "active"; above is "pending". */
 export function getActivePhase(status: CaseStatus): number {
   switch (status) {
-    case "Initialized":            return 3;  // Up to D.3 active
-    case "Briefing Call Complete": return 4;
-    case "Survey & Quotes":        return 7;
-    case "Mover Assigned":         return 10;
-    case "Awaiting Move Dates":    return 11;
-    case "Awaiting Finals Origin": return 11;
-    case "In Transit":             return 12;
-    case "Delivery Follow Up":     return 13;
-    case "Awaiting Final Billing": return 13;
-    case "Complete":               return 14;
+    case "Initialized":            return 3;   // D.1+D.2 auto-complete on creation; D.3 service intro 24-hr window
+    case "Briefing Call Complete": return 5;   // D.4 done; D.5 shipment config now active
+    case "Survey & Quotes":        return 6;   // D.5 done; D.6 survey & quote requests active
+    case "Mover Assigned":         return 9;   // D.6-D.8 done; D.9 mover booking active
+    case "Awaiting Move Dates":    return 10;  // D.9 done; D.10 SP enrollment active
+    case "Awaiting Finals Origin": return 11;  // D.10 done; D.11 move coordination active
+    case "In Transit":             return 11;  // still in D.11 coordination / KPI tracking
+    case "Delivery Follow Up":     return 12;  // D.11 done; D.12 delivery follow-up active
+    case "Awaiting Final Billing": return 13;  // D.12 done; D.13 invoice & billing active
+    case "Complete":               return 14;  // D.13 done; D.14 CSAT active / complete
     default:                       return 1;
   }
 }

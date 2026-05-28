@@ -50,7 +50,7 @@ export interface BriefingCall {
 }
 
 export interface MoveKPI {
-  preMoveServeyDate?: string;
+  preMovesSurveyDate?: string;
   actualPackingDate?: string;
   finalsReceivedDate?: string;
   deliveryComplete: boolean;

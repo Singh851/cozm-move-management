@@ -265,7 +265,7 @@ function PhaseContent({ phase, c }: { phase: typeof PHASES[0]; c: MMCase }) {
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Move KPI Fields</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { label: "Pre-Move Survey Date", value: c.kpi.preMoveServeyDate },
+              { label: "Pre-Move Survey Date", value: c.kpi.preMovesSurveyDate },
               { label: "Actual Packing Date", value: c.kpi.actualPackingDate },
               { label: "Finals Received Date", value: c.kpi.finalsReceivedDate },
               { label: "Actual Departure Date", value: c.kpi.actualDepartureDate },
