@@ -1,5 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users, FileText, CheckSquare, Settings, Briefcase, PlusCircle, CreditCard, ChevronDown } from "lucide-react";
+import {
+  LayoutDashboard, Users, FileText, Settings,
+  Briefcase, PlusCircle, CreditCard, ChevronDown, Mail,
+} from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useState } from "react";
 
@@ -8,7 +11,6 @@ const navigation = [
   {
     name: "Core Mobility",
     icon: Briefcase,
-    exact: false,
     children: [
       { name: "New Case", href: "/new-case", icon: PlusCircle },
       { name: "Cases", href: "/cases", icon: Users },
@@ -18,27 +20,22 @@ const navigation = [
   {
     name: "Analytics",
     icon: LayoutDashboard,
-    exact: false,
     children: [
-      { name: "Dashboard", href: "/dashboard" },
+      { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     ],
   },
-  {
-    name: "Settings",
-    icon: Settings,
-    href: "/settings",
-  },
+  { name: "Email Templates", href: "/email-templates", icon: Mail },
+  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 export function Sidebar({ collapsed }: { collapsed: boolean }) {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     "Core Mobility": true,
-    "Analytics": true,
+    Analytics: true,
   });
 
-  const toggleSection = (name: string) => {
+  const toggle = (name: string) =>
     setOpenSections((prev) => ({ ...prev, [name]: !prev[name] }));
-  };
 
   return (
     <div
@@ -53,9 +50,9 @@ export function Sidebar({ collapsed }: { collapsed: boolean }) {
             {item.children ? (
               <>
                 <button
-                  onClick={() => toggleSection(item.name)}
+                  onClick={() => toggle(item.name)}
                   className={cn(
-                    "flex items-center justify-between py-2.5 px-4 rounded-none hover:bg-slate-900 hover:text-slate-100 transition-colors focus:outline-none",
+                    "flex items-center justify-between py-2.5 px-4 hover:bg-slate-900 hover:text-slate-100 transition-colors focus:outline-none",
                     collapsed && "justify-center px-0"
                   )}
                   title={item.name}
@@ -80,7 +77,7 @@ export function Sidebar({ collapsed }: { collapsed: boolean }) {
                           cn(
                             "flex items-center py-2 pl-12 pr-4 text-sm font-medium transition-colors hover:text-white hover:bg-slate-900 border-l-2",
                             isActive
-                              ? "text-primary-500 border-primary-500 bg-slate-900/50"
+                              ? "text-primary-400 border-primary-500 bg-slate-900/50"
                               : "text-slate-400 border-transparent"
                           )
                         }
@@ -95,11 +92,12 @@ export function Sidebar({ collapsed }: { collapsed: boolean }) {
             ) : (
               <NavLink
                 to={item.href!}
+                end
                 className={({ isActive }) =>
                   cn(
-                    "flex items-center py-2.5 px-4 rounded-none transition-colors border-l-2",
+                    "flex items-center py-2.5 px-4 transition-colors border-l-2",
                     isActive
-                      ? "text-primary-500 border-primary-500 bg-slate-900/50"
+                      ? "text-primary-400 border-primary-500 bg-slate-900/50"
                       : "text-slate-400 border-transparent hover:text-slate-100 hover:bg-slate-900",
                     collapsed && "justify-center px-0"
                   )

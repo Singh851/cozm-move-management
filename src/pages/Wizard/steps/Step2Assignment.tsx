@@ -1,241 +1,170 @@
-import { Card, CardContent } from "../../../components/ui/Card";
-import { Input } from "../../../components/ui/Input";
 import { Label } from "../../../components/ui/Label";
+import { Input } from "../../../components/ui/Input";
 import { Select } from "../../../components/ui/Select";
-import { Switch } from "../../../components/ui/Switch";
-import { CalendarDays, Building2, MapPin, PlaneTakeoff, PlaneLanding } from "lucide-react";
-import { HelpTooltip } from "../../../components/ui/HelpTooltip";
+import { useState } from "react";
+
+const COUNTRIES = ["France","United Kingdom","Germany","Netherlands","Belgium","Luxembourg","Portugal","Spain","Italy","Switzerland","United States","Canada","Australia","Singapore","Hong Kong","India","UAE","Other"];
+const ENTITIES_BY_COUNTRY: Record<string, string[]> = {
+  France: ["BNP PARIBAS PERSONAL FINANCE","GIE BNP PARIBAS CARDIF","BNP Paribas Hong Kong Branch","ARVAL SERVICE LEASE SA (France)","FINDOMESTIC BANCA SPA","BNP PARIBAS SA / PORTUGAL"],
+  "United Kingdom": ["BNP PARIBAS London Branch","BNP PARIBAS SA SYDNEY BRANCH"],
+  Germany: ["BNP Paribas Niederlassung S.A. Deutschland - Frankfurt"],
+  Luxembourg: ["BGL BNP PARIBAS"],
+  Canada: ["BNPP SA Montreal Branch - CA"],
+  Switzerland: ["BNPP SA Geneva Branch"],
+  Australia: ["Chess Moving Sydney"],
+  Singapore: ["BNP Paribas Singapore Branch"],
+};
 
 export function Step2Assignment() {
+  const [homeCountry, setHomeCountry] = useState("");
+  const [hostCountry, setHostCountry] = useState("");
+  const [billingCountry, setBillingCountry] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const monthsDiff = startDate && endDate
+    ? Math.max(0, Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24 * 30.44)))
+    : "";
+
   return (
-    <div className="space-y-8">
-      <section>
-        <div className="flex items-center gap-2 mb-6">
-          <div className="h-8 w-8 rounded-lg bg-primary-100 text-primary-600 flex items-center justify-center">
-            <CalendarDays className="h-5 w-5" />
+    <div className="space-y-6">
+      {/* Assignment Dates */}
+      <div>
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-4">Assignment Details</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="startDate">Assignment Start Date <span className="text-red-500">*</span></Label>
+            <Input id="startDate" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="mt-1" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900">Assignment Dates</h2>
-        </div>
-        <Card>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="startDate">Start Date <span className="text-red-500">*</span></Label>
-                <Input id="startDate" type="date" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="endDate">End Date</Label>
-                <Input id="endDate" type="date" />
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label className="text-base">Mark as Confidential</Label>
-                  <HelpTooltip text="Restricts visibility of this case to authorised personnel only." />
-                </div>
-                <div className="flex items-center gap-3">
-                   <Switch id="confidential" />
-                   <Label htmlFor="confidential" className="font-normal text-slate-600">Confidential</Label>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label className="text-base">VIP Status</Label>
-                  <HelpTooltip text="Enable for senior executives or board-level assignees requiring priority handling." />
-                </div>
-                <div className="flex items-center gap-3">
-                   <Switch id="vipStatus" />
-                   <Label htmlFor="vipStatus" className="font-normal text-slate-600">Qualifies for VIP status</Label>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      <section>
-        <div className="flex items-center gap-2 mb-6">
-          <div className="h-8 w-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
-            <Building2 className="h-5 w-5" />
+          <div>
+            <Label htmlFor="endDate">Assignment End Date</Label>
+            <Input id="endDate" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="mt-1" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900">Legal Entities</h2>
-        </div>
-        <Card>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="filterHomeCountry">Filter Legal Home Entity by Country</Label>
-                  <HelpTooltip text="Narrow down the home entity list by selecting a country first." />
-                </div>
-                <Select id="filterHomeCountry">
-                  <option value="">Select an option</option>
-                  <option>Germany</option>
-                  <option>United Kingdom</option>
-                  <option>USA</option>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="filterHostCountry">Filter Legal Host Entity by Country</Label>
-                  <HelpTooltip text="Narrow down the host entity list by selecting a country first." />
-                </div>
-                <Select id="filterHostCountry">
-                  <option value="">Select an option</option>
-                  <option>Germany</option>
-                  <option>United Kingdom</option>
-                  <option>USA</option>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="homeEntity">Legal Home Entity</Label>
-                  <HelpTooltip text="Entity in the home country." />
-                </div>
-                <Select id="homeEntity">
-                  <option value="">Select entity...</option>
-                  <option>GmbH (Germany)</option>
-                  <option>Company Ltd (UK)</option>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="hostEntity">Legal Host Entity <span className="text-red-500">*</span></Label>
-                  <HelpTooltip text="Entity receiving the assignee." />
-                </div>
-                <Select id="hostEntity">
-                  <option value="">Select entity...</option>
-                  <option>Company Ltd (UK)</option>
-                  <option>Inc (USA)</option>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="filterBillingCountry">Filter Legal Billing Entity by Country</Label>
-                  <HelpTooltip text="Optional — use if the billing entity differs from home or host entity country." />
-                </div>
-                <Select id="filterBillingCountry">
-                  <option value="">Select an option</option>
-                  <option>Germany</option>
-                  <option>United Kingdom</option>
-                  <option>USA</option>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="billingEntity">Legal Billing Entity</Label>
-                  <HelpTooltip text="The entity responsible for billing and invoicing of assignment costs." />
-                </div>
-                <Select id="billingEntity">
-                  <option value="">Select an option</option>
-                  <option>Entity A</option>
-                  <option>Entity B</option>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      <section>
-        <div className="flex items-center gap-2 mb-6">
-          <div className="h-8 w-8 rounded-lg bg-primary-100 text-primary-600 flex items-center justify-center">
-            <MapPin className="h-5 w-5" />
+          <div>
+            <Label>Length of Assignment (months)</Label>
+            <Input value={monthsDiff} readOnly placeholder="Auto-calculated" className="mt-1 bg-slate-50" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900">Relocation Route</h2>
+          <div className="flex flex-col gap-3 justify-end">
+            <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-700">
+              <input type="checkbox" className="accent-primary-600 h-4 w-4" />
+              Mark assignment as confidential
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-700">
+              <input type="checkbox" className="accent-primary-600 h-4 w-4" />
+              Does this individual qualify for VIP status?
+            </label>
+          </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="border-t-4 border-t-slate-300">
-            <CardContent className="p-6 space-y-6">
-              <div className="flex items-center gap-2 mb-2">
-                <PlaneTakeoff className="h-5 w-5 text-teal-600" />
-                <h3 className="font-bold text-slate-900 text-lg">Relocating From</h3>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label>Address</Label>
-                  <HelpTooltip text="Current home address of the assignee." />
-                </div>
-                <Input placeholder="Street address" />
-              </div>
-              <div className="space-y-2">
-                <Label>City <span className="text-red-500">*</span></Label>
-                <Input placeholder="e.g. Berlin" />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Post Code</Label>
-                  <Input placeholder="e.g. 10115" />
-                </div>
-                <div className="space-y-2">
-                  <Label>State / County</Label>
-                  <Input placeholder="e.g. Bavaria" />
-                </div>
-              </div>
+      </div>
 
-              <div className="space-y-2">
-                <Label>Country <span className="text-red-500">*</span></Label>
-                <Select>
-                  <option value="">Select an option</option>
-                  <option>Germany</option>
-                  <option>France</option>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="border-t-4 border-t-teal-500">
-            <CardContent className="p-6 space-y-6">
-              <div className="flex items-center gap-2 mb-2">
-                <PlaneLanding className="h-5 w-5 text-teal-600" />
-                <h3 className="font-bold text-slate-900 text-lg">Relocating To</h3>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label>Address</Label>
-                  <HelpTooltip text="Destination address in the host country (if known)." />
-                </div>
-                <Input placeholder="Street address" />
-              </div>
-              <div className="space-y-2">
-                <Label>City <span className="text-red-500">*</span></Label>
-                <Input placeholder="e.g. London" />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Post Code</Label>
-                  <Input placeholder="e.g. SW1A 1AA" />
-                </div>
-                <div className="space-y-2">
-                  <Label>State / County</Label>
-                  <Input placeholder="e.g. Greater London" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Country <span className="text-red-500">*</span></Label>
-                <Select>
-                  <option value="">Select an option</option>
-                  <option>United Kingdom</option>
-                  <option>USA</option>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
+      {/* Entities */}
+      <div className="pt-4 border-t border-slate-100">
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-4">Entities</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label>Filter Legal Home Entity by Country</Label>
+            <Select className="mt-1" value={homeCountry} onChange={e => setHomeCountry(e.target.value)}>
+              <option value="">Select country</option>
+              {COUNTRIES.map(c => <option key={c}>{c}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label>Legal Home Entity</Label>
+            <Select className="mt-1">
+              <option value="">Select entity</option>
+              {(ENTITIES_BY_COUNTRY[homeCountry] ?? []).map(e => <option key={e}>{e}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label>Filter Legal Host Entity by Country <span className="text-red-500">*</span></Label>
+            <Select className="mt-1" value={hostCountry} onChange={e => setHostCountry(e.target.value)}>
+              <option value="">Select country</option>
+              {COUNTRIES.map(c => <option key={c}>{c}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label>Legal Host Entity <span className="text-red-500">*</span></Label>
+            <Select className="mt-1">
+              <option value="">Select entity</option>
+              {(ENTITIES_BY_COUNTRY[hostCountry] ?? []).map(e => <option key={e}>{e}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label>Filter Legal Billing Entity by Country</Label>
+            <Select className="mt-1" value={billingCountry} onChange={e => setBillingCountry(e.target.value)}>
+              <option value="">Select country</option>
+              {COUNTRIES.map(c => <option key={c}>{c}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label>Legal Billing Entity</Label>
+            <Select className="mt-1">
+              <option value="">Select entity</option>
+              {(ENTITIES_BY_COUNTRY[billingCountry] ?? []).map(e => <option key={e}>{e}</option>)}
+            </Select>
+          </div>
         </div>
-      </section>
+      </div>
+
+      {/* Origin */}
+      <div className="pt-4 border-t border-slate-100">
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-4">Relocating From</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
+            <Label>Address</Label>
+            <Input placeholder="Street address" className="mt-1" />
+          </div>
+          <div>
+            <Label>City <span className="text-red-500">*</span></Label>
+            <Input placeholder="City" className="mt-1" />
+          </div>
+          <div>
+            <Label>Post Code</Label>
+            <Input placeholder="Post code" className="mt-1" />
+          </div>
+          <div>
+            <Label>State / County</Label>
+            <Input placeholder="State or county" className="mt-1" />
+          </div>
+          <div>
+            <Label>Country <span className="text-red-500">*</span></Label>
+            <Select className="mt-1">
+              <option value="">Select country</option>
+              {COUNTRIES.map(c => <option key={c}>{c}</option>)}
+            </Select>
+          </div>
+        </div>
+      </div>
+
+      {/* Destination */}
+      <div className="pt-4 border-t border-slate-100">
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-4">Relocating To</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
+            <Label>Address</Label>
+            <Input placeholder="Street address (if known)" className="mt-1" />
+          </div>
+          <div>
+            <Label>City <span className="text-red-500">*</span></Label>
+            <Input placeholder="City" className="mt-1" />
+          </div>
+          <div>
+            <Label>Post Code</Label>
+            <Input placeholder="Post code" className="mt-1" />
+          </div>
+          <div>
+            <Label>State / County</Label>
+            <Input placeholder="State or county" className="mt-1" />
+          </div>
+          <div>
+            <Label>Country <span className="text-red-500">*</span></Label>
+            <Select className="mt-1">
+              <option value="">Select country</option>
+              {COUNTRIES.map(c => <option key={c}>{c}</option>)}
+            </Select>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

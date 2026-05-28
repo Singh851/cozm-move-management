@@ -1,240 +1,163 @@
-import { useState } from "react";
-import { Card, CardContent } from "../../../components/ui/Card";
-import { Input } from "../../../components/ui/Input";
 import { Label } from "../../../components/ui/Label";
+import { Input } from "../../../components/ui/Input";
 import { Select } from "../../../components/ui/Select";
-import { User, Users, UserPlus } from "lucide-react";
-import { HelpTooltip } from "../../../components/ui/HelpTooltip";
+import { Button } from "../../../components/ui/Button";
+import { useState } from "react";
+import { PlusCircle, X } from "lucide-react";
+
+const SALUTATIONS = ["Mr", "Mrs", "Ms", "Dr", "Prof"];
+const NATIONALITIES = ["British","French","German","Dutch","Belgian","Portuguese","Spanish","Italian","Irish","Swiss","Australian","Singaporean","American","Canadian","Indian","Other"];
+const MARITAL = ["Single","Married","Civil Partnership","Divorced","Widowed","Prefer not to say"];
+const GENDERS = ["Male","Female","Non-binary","Prefer not to say"];
+const COUNTRIES = ["France","United Kingdom","Germany","Netherlands","Belgium","Luxembourg","Portugal","Spain","Italy","Switzerland","United States","Canada","Australia","Singapore","Hong Kong","India","UAE","Other"];
+
+interface Dependent { name: string; relationship: string; dob: string; nationality: string; }
 
 export function Step1Assignee() {
-  const [hasAdditionalInfo, setHasAdditionalInfo] = useState("no");
-  const [totalRelocating, setTotalRelocating] = useState<number>(1);
-  const [isPreferredName, setIsPreferredName] = useState("yes");
+  const [preferredName, setPreferredName] = useState(false);
+  const [dependants, setDependants] = useState<Dependent[]>([]);
+
+  const addDependant = () => setDependants(d => [...d, { name: "", relationship: "", dob: "", nationality: "" }]);
+  const removeDependant = (i: number) => setDependants(d => d.filter((_, idx) => idx !== i));
+  const updateDependant = (i: number, field: keyof Dependent, value: string) =>
+    setDependants(d => d.map((item, idx) => idx === i ? { ...item, [field]: value } : item));
 
   return (
-    <div className="space-y-8">
-      <section>
-        <div className="flex items-center gap-2 mb-6">
-          <div className="h-8 w-8 rounded-lg bg-primary-100 text-primary-600 flex items-center justify-center">
-            <User className="h-5 w-5" />
+    <div className="space-y-6">
+      <div>
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-4">About Assignee</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
+            <Input id="firstName" placeholder="Enter first name" className="mt-1" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900">About Assignee</h2>
+          <div>
+            <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
+            <Input id="lastName" placeholder="Enter last name" className="mt-1" />
+          </div>
+          <div>
+            <Label htmlFor="salutation">Salutation</Label>
+            <Select id="salutation" className="mt-1">
+              <option value="">Select an option</option>
+              {SALUTATIONS.map(s => <option key={s}>{s}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="primaryEmail">Primary Email <span className="text-red-500">*</span></Label>
+            <Input id="primaryEmail" type="email" placeholder="email@company.com" className="mt-1" />
+          </div>
+          <div>
+            <Label>Is this a Preferred First Name?</Label>
+            <div className="flex gap-4 mt-2">
+              {["Yes", "No"].map(v => (
+                <label key={v} className="flex items-center gap-2 cursor-pointer text-sm text-slate-700">
+                  <input type="radio" name="preferredName" value={v} onChange={() => setPreferredName(v === "Yes")}
+                    className="accent-primary-600" />
+                  {v}
+                </label>
+              ))}
+            </div>
+          </div>
+          {preferredName && (
+            <div>
+              <Label htmlFor="preferredNameField">Preferred Name</Label>
+              <Input id="preferredNameField" placeholder="Preferred first name" className="mt-1" />
+            </div>
+          )}
+          <div>
+            <Label htmlFor="nationality">Nationality <span className="text-red-500">*</span></Label>
+            <Select id="nationality" className="mt-1">
+              <option value="">Select an option</option>
+              {NATIONALITIES.map(n => <option key={n}>{n}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="otherNationality">Other Nationality</Label>
+            <Select id="otherNationality" className="mt-1">
+              <option value="">Select an option</option>
+              {NATIONALITIES.map(n => <option key={n}>{n}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="dob">Date of Birth</Label>
+            <Input id="dob" type="date" className="mt-1" />
+          </div>
+          <div>
+            <Label htmlFor="gender">Gender</Label>
+            <Select id="gender" className="mt-1">
+              <option value="">Select an option</option>
+              {GENDERS.map(g => <option key={g}>{g}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="maritalStatus">Marital Status</Label>
+            <Select id="maritalStatus" className="mt-1">
+              <option value="">Select an option</option>
+              {MARITAL.map(m => <option key={m}>{m}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="totalPeople">Total People Relocating (incl. assignee) <span className="text-red-500">*</span></Label>
+            <Input id="totalPeople" type="number" min={1} placeholder="1" className="mt-1" />
+          </div>
+          <div>
+            <Label htmlFor="permResCountry">Permanent Residence Country</Label>
+            <Select id="permResCountry" className="mt-1">
+              <option value="">Select an option</option>
+              {COUNTRIES.map(c => <option key={c}>{c}</option>)}
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="permResCity">Permanent Residence City</Label>
+            <Input id="permResCity" placeholder="City" className="mt-1" />
+          </div>
         </div>
-        
-        <Card>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
-                  <HelpTooltip text="Legal first name as it appears on passport." />
-                </div>
-                <Input id="firstName" placeholder="e.g. Sarah" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
-                  <HelpTooltip text="Legal last name as it appears on passport." />
-                </div>
-                <Input id="lastName" placeholder="e.g. Miller" />
-              </div>
-            </div>
+      </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label>Is this the Preferred First Name?</Label>
-                  <HelpTooltip text='Select "No" if the assignee goes by a different preferred name day-to-day.' />
-                </div>
-                <div className="flex items-center gap-4 mt-2">
-                  <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
-                    <input type="radio" value="yes" checked={isPreferredName === "yes"} onChange={() => setIsPreferredName("yes")} className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-slate-300" />
-                    Yes
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
-                    <input type="radio" value="no" checked={isPreferredName === "no"} onChange={() => setIsPreferredName("no")} className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-slate-300" />
-                    No
-                  </label>
-                </div>
+      {/* Dependants */}
+      <div className="pt-4 border-t border-slate-100">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Family Members / Dependants</p>
+          <Button type="button" variant="outline" size="sm" onClick={addDependant}>
+            <PlusCircle className="h-4 w-4 mr-1.5" /> Add Family Member
+          </Button>
+        </div>
+        {dependants.length === 0 && (
+          <p className="text-sm text-slate-400 italic">No dependants added.</p>
+        )}
+        {dependants.map((dep, i) => (
+          <div key={i} className="border border-slate-200 rounded-xl p-4 mb-3 bg-slate-50/50 relative">
+            <button type="button" onClick={() => removeDependant(i)} className="absolute top-3 right-3 text-slate-400 hover:text-red-500 transition-colors">
+              <X className="h-4 w-4" />
+            </button>
+            <p className="text-xs font-semibold text-slate-500 mb-3">Family Member {i + 1}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <Label>Full Name</Label>
+                <Input value={dep.name} onChange={e => updateDependant(i, "name", e.target.value)} placeholder="Full name" className="mt-1" />
               </div>
-              
-              {isPreferredName === "no" && (
-                <div className="space-y-2 animate-[fadeIn_0.3s_ease-out_forwards]">
-                  <div className="flex items-center">
-                    <Label htmlFor="prefName">Preferred Name</Label>
-                    <HelpTooltip text="The name the assignee prefers to be called." />
-                  </div>
-                  <Input id="prefName" placeholder="e.g. Sam" />
-                </div>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="salutation">Salutation</Label>
-                  <HelpTooltip text="Formal title to be used in official correspondence." />
-                </div>
-                <Select id="salutation">
-                  <option value="">Select an option...</option>
-                  <option>Mr</option>
-                  <option>Mrs</option>
-                  <option>Ms</option>
-                  <option>Dr</option>
-                  <option>Prof</option>
-                  <option>Mx</option>
+              <div>
+                <Label>Relationship</Label>
+                <Select value={dep.relationship} onChange={e => updateDependant(i, "relationship", e.target.value)} className="mt-1">
+                  <option value="">Select</option>
+                  {["Spouse/Partner","Child","Parent","Other"].map(r => <option key={r}>{r}</option>)}
                 </Select>
               </div>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="email">Primary Email <span className="text-red-500">*</span></Label>
-                  <HelpTooltip text="Main email for assignment communications." />
-                </div>
-                <Input id="email" type="email" placeholder="sarah.miller@company.com" />
+              <div>
+                <Label>Date of Birth</Label>
+                <Input type="date" value={dep.dob} onChange={e => updateDependant(i, "dob", e.target.value)} className="mt-1" />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="additionalInfo">Additional Assignee Information</Label>
-                  <HelpTooltip text="Include secondary contact, birthdate, status, etc." />
-                </div>
-                <Select 
-                  id="additionalInfo" 
-                  value={hasAdditionalInfo} 
-                  onChange={(e) => setHasAdditionalInfo(e.target.value)}
-                >
-                  <option value="no">No</option>
-                  <option value="yes">Yes</option>
+              <div>
+                <Label>Nationality</Label>
+                <Select value={dep.nationality} onChange={e => updateDependant(i, "nationality", e.target.value)} className="mt-1">
+                  <option value="">Select</option>
+                  {NATIONALITIES.map(n => <option key={n}>{n}</option>)}
                 </Select>
               </div>
             </div>
-
-            {hasAdditionalInfo === "yes" && (
-              <div className="pt-4 mt-4 border-t border-slate-100 space-y-6 animate-[fadeIn_0.3s_ease-out_forwards]">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="additionalContactType">Add Additional Contact Type</Label>
-                    <Select id="additionalContactType">
-                      <option value="">Select option...</option>
-                      <option>Personal Email</option>
-                      <option>Mobile Phone</option>
-                      <option>Home Phone</option>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="birthdate">Birthdate</Label>
-                    <Input id="birthdate" type="date" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="maritalStatus">Marital Status</Label>
-                    <Select id="maritalStatus">
-                      <option value="">Select status...</option>
-                      <option>Single</option>
-                      <option>Married</option>
-                      <option>Domestic Partner</option>
-                      <option>Divorced</option>
-                      <option>Widowed</option>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="gender">Gender</Label>
-                    <Select id="gender">
-                      <option value="">Select gender...</option>
-                      <option>Male</option>
-                      <option>Female</option>
-                      <option>Non-binary</option>
-                      <option>Prefer not to say</option>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="residenceCountry">Permanent Residence Country</Label>
-                    <Input id="residenceCountry" placeholder="e.g. Germany" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="residenceCity">Permanent Residence City</Label>
-                    <Input id="residenceCity" placeholder="e.g. Berlin" />
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </section>
-
-      <section>
-         <div className="flex items-center gap-2 mb-6">
-          <div className="h-8 w-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
-            <Users className="h-5 w-5" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900">Relocating Family</h2>
-        </div>
-
-        <Card>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label htmlFor="totalRelocating">Total People Relocating <span className="text-red-500">*</span></Label>
-                  <HelpTooltip text="Including assignee and dependants." />
-                </div>
-                <Input 
-                  id="totalRelocating" 
-                  type="number" 
-                  min="1" 
-                  max="10"
-                  placeholder="e.g. 3" 
-                  value={totalRelocating || ""}
-                  onChange={(e) => setTotalRelocating(parseInt(e.target.value) || 0)}
-                />
-              </div>
-            </div>
-
-            {totalRelocating > 1 && (
-              <div className="space-y-4 pt-2">
-                <div className="flex items-center">
-                  <Label className="text-base">Family Members</Label>
-                  <HelpTooltip text={`Please provide details for the ${totalRelocating - 1} accompanying dependant(s).`} />
-                </div>
-                
-                {Array.from({ length: totalRelocating - 1 }).map((_, idx) => (
-                  <div key={idx} className="p-5 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 space-y-4 animate-[fadeIn_0.3s_ease-out_forwards]">
-                    <div className="flex gap-2 items-center text-slate-700 font-semibold mb-2">
-                      <UserPlus className="h-4 w-4" /> Family Member {idx + 1}
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-1.5">
-                        <Label className="text-xs">First Name</Label>
-                        <Input placeholder="First Name" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-xs">Last Name</Label>
-                        <Input placeholder="Last Name" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-xs">Relationship</Label>
-                        <Select>
-                          <option value="">Select...</option>
-                          <option>Spouse / Partner</option>
-                          <option>Child</option>
-                          <option>Dependant</option>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </section>
+        ))}
+      </div>
     </div>
   );
 }
