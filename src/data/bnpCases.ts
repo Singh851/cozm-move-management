@@ -107,7 +107,7 @@ export const BNP_CASES: MMCase[] = [
       { method: "Air", spStatus: "Complete" }
     ],
     quotes: [
-      { id: "Q-0668", mover: "Chess Moving Sydney", volume: "11 cbm + 200 kg air", price: 7573.70, currency: "EUR", winner: true, savings: 588.30, selectionReason: "Price" },
+      { id: "Q-0668", mover: "Chess Moving Sydney", volume: "11 cbm + 200 kg air", price: 7573.70, currency: "EUR", winner: true, savings: 558.30, selectionReason: "Price" },
       { id: "Q-0669", mover: "OSS World Wide Movers", volume: "11 cbm + 200 kg air", price: 8162, currency: "EUR", winner: false }
     ],
     selectedMover: "Chess Moving Sydney",

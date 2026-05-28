@@ -6,6 +6,8 @@ import { Cases } from "./pages/Cases";
 import { CaseDetail } from "./pages/CaseDetail";
 import { NewCaseWizard } from "./pages/Wizard/NewCaseWizard";
 import { EmailTemplates } from "./pages/EmailTemplates";
+import { Billing } from "./pages/Billing";
+import { Settings } from "./pages/Settings";
 
 export default function App() {
   return (
@@ -18,6 +20,8 @@ export default function App() {
           <Route path="cases/:id" element={<CaseDetail />} />
           <Route path="new-case" element={<NewCaseWizard />} />
           <Route path="email-templates" element={<EmailTemplates />} />
+          <Route path="billing" element={<Billing />} />
+          <Route path="settings" element={<Settings />} />
           <Route path="*" element={<div className="p-8 text-center text-slate-500">View under construction…</div>} />
         </Route>
       </Routes>
